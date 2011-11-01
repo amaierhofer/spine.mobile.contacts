@@ -3,6 +3,28 @@ Spine   = require('spine')
 $       = Spine.$
 Contact = require('models/contact')
 
+class ScrollingPanel extends Panel
+	constructor: ->
+		super
+		@header.addClass('header')
+		@footer.addClass('footer')
+		@content.addClass('wrapper')
+
+	html: (view) =>
+		console.log "hasScroller: #{@scroller?}"
+		unless @scroller?
+			scroller = $('<div class="scroller"/>')
+			scroller.append(view)
+			super scroller
+			@scroller = new iScroll(@content[0])
+			document.addEventListener 'touchmove', ((e) -> e.preventDefault()), false
+			setTimeout (() => @scroller.refresh()), 0
+		else
+			@content.find('.scroller').html(view)
+			@refreshElements()
+			setTimeout (() => @scroller.refresh()), 50
+			@content
+
 class ContactsShow extends Panel
 	className: 'contacts showView'
 
@@ -11,21 +33,22 @@ class ContactsShow extends Panel
 
 		Contact.bind('change', @render)
 
-		@active (params) -> 
+		@active (params) ->
 			@change(params.id)
 
-		@addButton('Back', @back)    
+		@addButton('Back', @back)
 
 	render: =>
 		return unless @item
 		@html require('views/contacts/show')(@item)
+
 
 	change: (id) ->
 		@item = Contact.find(id)
 		@render()
 
 	back: ->
-		@navigate('/contacts', trans: 'left')    
+		@navigate('/contacts', trans: 'left')
 
 class ContactsCreate extends Panel
 	elements:
@@ -61,7 +84,7 @@ class ContactsCreate extends Panel
 		super
 		@input.blur()
 
-class ContactsList extends Panel
+class ContactsList extends ScrollingPanel
 	events:
 		'tap .item': 'click'
 
@@ -71,16 +94,12 @@ class ContactsList extends Panel
 
 	constructor: ->
 		super
-
 		Contact.bind('refresh change', @render)
 		@addButton('Add', @add).addClass('right')
 
 	render: =>
-		items = Contact.all().sort(Contact.nameSort)
-		view = require('views/contacts/item')(items)
-		wrapper = $('<div class="scrollable vertical"/>')
-		wrapper.append(view)
-		@html wrapper
+		items = Contact.all()
+		@html require('views/contacts/item')(items)
 
 	click: (e) ->
 		item = $(e.target).item()
@@ -91,7 +110,7 @@ class ContactsList extends Panel
 
 
 class Contacts extends Spine.Controller
-	constructor: -> 
+	constructor: ->
 		super
 
 		@list    = new ContactsList

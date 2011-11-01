@@ -23,7 +23,7 @@ class App extends Stage.Global
 	addSomeUsers: ->
 		localStorage.removeItem("Contact")
 		if @contact.all().length == 0
-			@contact.create(name: "Dummy#{idx}") for idx in [1...10]
+			@contact.create(name: "Dummy#{idx}") for idx in [1...20]
 
 
 module.exports = App
