@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html manifest="cache.manifest">
+<html>
 <head>
   <meta charset=utf-8>
   <title>App</title>
@@ -13,6 +13,17 @@
       exports.app = new App({el: $("body")});      
     });
   </script>
+
+  <!--liverload-->
+  <script src="/livereload/content.js"></script>
+  <script src="/livereload/background.js"></script>
+  <script src="/livereload/xbrowser/livereload.js"></script>
+  <script>
+    LivereloadBackground.prototype.host = "192.168.1.100";
+    window.onload = function(){livereload.run(); };
+  </script>
+
+
   <meta name="viewport" content="width=device-width; initial-scale=1.0; minimum-scale=1; maximum-scale=1.0; user-scalable=0;"/>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="format-detection" content="telephone=no" />
