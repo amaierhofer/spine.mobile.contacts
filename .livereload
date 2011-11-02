@@ -1,6 +1,7 @@
 # Lines starting with pound sign (#) are ignored.
 
 # additional extensions to monitor
+config.exts << 'styl'
 config.exts << 'coffee'
 config.exts << 'scss'
 

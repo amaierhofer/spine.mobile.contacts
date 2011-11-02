@@ -1,27 +1,10 @@
 Spine   = require('spine')
-{Panel} = require('spine.mobile')
-$       = Spine.$
+{Stage,Panel} = require('spine.mobile')
 Contact = require('models/contact')
+IScroll = require('lib/iscroll')
+$       = Spine.$
 
-class ScrollingPanel extends Panel
-	constructor: ->
-		super
-		@header.addClass('header')
-		@footer.addClass('footer')
-		@content.addClass('wrapper')
-		@content.append('<div class="scroller"/>')
-		@content = @content.find('.scroller')
-
-	html: (view) =>
-		console.log "hasScroller: #{@scroller?}"
-		super view
-		unless @scroller?
-			wrapper = @content.parents('.wrapper')[0]
-			@scroller = new iScroll(wrapper, checkDOMChanges: true)
-			document.addEventListener 'touchmove', ((e) -> e.preventDefault()), false
-		else
-		setTimeout (() => @scroller.refresh()), 0
-		@content
+console.log(IScroll)
 
 class ContactsShow extends Panel
 	className: 'contacts showView'
@@ -82,7 +65,9 @@ class ContactsCreate extends Panel
 		super
 		@input.blur()
 
-class ContactsList extends ScrollingPanel
+class ContactsList extends Panel
+	@include IScroll
+
 	events:
 		'tap .item': 'click'
 
