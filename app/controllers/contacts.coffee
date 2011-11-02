@@ -9,21 +9,19 @@ class ScrollingPanel extends Panel
 		@header.addClass('header')
 		@footer.addClass('footer')
 		@content.addClass('wrapper')
+		@content.append('<div class="scroller"/>')
+		@content = @content.find('.scroller')
 
 	html: (view) =>
 		console.log "hasScroller: #{@scroller?}"
+		super view
 		unless @scroller?
-			scroller = $('<div class="scroller"/>')
-			scroller.append(view)
-			super scroller
-			@scroller = new iScroll(@content[0])
+			wrapper = @content.parents('.wrapper')[0]
+			@scroller = new iScroll(wrapper, checkDOMChanges: true)
 			document.addEventListener 'touchmove', ((e) -> e.preventDefault()), false
-			setTimeout (() => @scroller.refresh()), 0
 		else
-			@content.find('.scroller').html(view)
-			@refreshElements()
-			setTimeout (() => @scroller.refresh()), 50
-			@content
+		setTimeout (() => @scroller.refresh()), 0
+		@content
 
 class ContactsShow extends Panel
 	className: 'contacts showView'
